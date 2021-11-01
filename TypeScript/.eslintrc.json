@@ -20,6 +20,7 @@
 		"eqeqeq": "warn",
 		"no-else-return": "error",
 		"comma-dangle": "warn",
-		"no-var": "error"
+		"no-var": "error",
+		"camelcase": "warn"
 	}
 }

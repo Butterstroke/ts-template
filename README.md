@@ -1,2 +1,2 @@
-# ts-template
-My template repository for new TypeScript projects
+# Project Templates
+My template repository for new projects

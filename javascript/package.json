@@ -1,0 +1,25 @@
+{
+  "name": "javascript-template",
+  "version": "1.0.0",
+  "description": "Template for JavaScript projects",
+  "main": "./src/index.js",
+  "scripts": {
+    "eslint": "eslint .",
+    "eslintfix": "eslint . --fix",
+    "prettier": "prettier --write .",
+    "prepare": "husky install",
+    "start": "./src/index.js"
+  },
+  "author": {
+    "name": "Frederick Katsura",
+    "email": "katsurinstudios@protonmail.ch"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^11.2.6",
+    "prettier": "^2.4.1"
+  }
+}

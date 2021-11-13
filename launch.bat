@@ -3,47 +3,74 @@
 set baseURL=https://github.com/Butterstroke/project-templates/trunk/
 set baseDIR=%~dp0
 
-REM Required. Can't have a project without a name.
+REM Can't have a project without a name.
 set project-name="%1"
-if %project-name%=="" (
-    set error-message=Name not defined for project. Failed to continue.
-    goto error-exit
-)
-set project-name=%project-name:"=%
 
-REM Required. Must be of an existing project template
-set project-type="%2/"
-set valid-type="n"
+if %project-name%=="" ( goto define-all )
+goto define-none
 
-if %project-type%=="" (
-    set error-message=Type not defined for project. Failed to continue.
-    goto error-exit
-)
+:define-all
+    echo Project name is not given...
+    set /p project-name="What would you like to call it? " 
 
-FOR /F "tokens=* USEBACKQ" %%g IN (`svn list %baseURL%`) do (
-    if "%%g"==%project-type% ( set valid-type="y" )
-)
+    echo Project type is not given...
+    set /p project-type=Template would you like? 
 
-if %valid-type%=="n" (
-    set error-message=Type does not exist in repository. Failed to continue.
-    goto error-exit
+    set project-type="%project-type%/"
+
+    echo Project not defined as private or public...
+    set /p project-public=Should this be public? (y/n) 
+
+    set project-public="%project-public%"
+
+    goto verify-info
 )
 
-REM Optional. Will be set to private by default
-set project-public="%3"
+:define-none
+    REM Must be of an existing project template
+    set project-type="%2/"
 
-if %project-public%=="" ( set project-public="n" )
-if %project-public%=="public" ( set project-public="y" )
-if %project-public%=="private" ( set project-public="n" )
+    REM Will be set to private by default
+    set project-public="%3"
 
-if NOT %project-public%=="y" (
-    if NOT %project-public%=="n" (
-        set error-message=Invalid property for public argument. Failed to continue.
+    goto verify-info
+
+:verify-info
+    if %project-name%=="" (
+        set error-message=Name not defined for project. Failed to continue.
+        goto error-exit
+    ) 
+
+    if %project-type%=="" (
+        set error-message=Type not defined for project. Failed to continue.
+        goto error-exit   
+    ) 
+
+    set project-name=%project-name:"=%
+
+    set valid-type="n"
+
+    FOR /F "tokens=* USEBACKQ" %%g IN (`svn list %baseURL%`) do (
+        if "%%g"==%project-type% ( set valid-type="y" )
+    )
+
+    if %valid-type%=="n" (
+        set error-message=Type does not exist in repository. Failed to continue.
         goto error-exit
     )
-)
 
-goto process-project
+    if %project-public%=="" ( set project-public="n" )
+    if %project-public%=="public" ( set project-public="y" )
+    if %project-public%=="private" ( set project-public="n" )
+
+    if NOT %project-public%=="y" (
+        if NOT %project-public%=="n" (
+            set error-message=Invalid property for public argument. Failed to continue.
+            goto error-exit
+        )
+    )
+
+    goto process-project
 
 :error-exit 
 echo.
@@ -64,7 +91,7 @@ echo Current Directory: %~dp0
 set repository-path=""
 set /p repository-path=What directory should the new repository be in? (Leave blank for current directory) 
 
-if %repository-path%=="" ( set repository-path=%~dp0)
+if %repository-path%=="" ( set repository-path=%~dp0 )
 
 cd /d %repository-path%
 

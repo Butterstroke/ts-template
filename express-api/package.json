@@ -1,0 +1,30 @@
+{
+  "name": "express-api",
+  "version": "1.0.0",
+  "description": "A template for a REST API using Express and Node.js",
+  "private": true,
+  "main": "build/src/index.js",
+  "scripts": {
+    "start": "node build/src/server.js",
+    "eslint": "eslint .",
+    "build": "tsc",
+    "launch": "npm run build && npm run start"
+  },
+  "author": {
+    "name": "Frederick Katsura",
+    "email": "katsurinstudios@protonmail.ch"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-async-router": "^0.1.15"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.2.0",
+    "typescript": "^4.4.4"
+  }
+}

@@ -14,6 +14,12 @@
     "name": "Frederick Katsura",
     "email": "katsurinstudios@protonmail.ch"
   },
+  "lint-staged": {
+		"*.{js,json,jsx}": [
+			"prettier --write",
+			"eslint --fix --quiet"
+		]
+	},
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.1.0",

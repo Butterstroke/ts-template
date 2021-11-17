@@ -6,9 +6,12 @@
   "main": "build/src/index.js",
   "scripts": {
     "start": "node build/src/server.js",
-    "eslint": "eslint .",
     "build": "tsc",
-    "launch": "npm run build && npm run start"
+    "launch": "npm run build && npm run start",
+    "eslint": "eslint .",
+    "eslintfix": "eslint . --fix",
+    "prettier": "prettier --write .",
+		"prepare": "husky install"
   },
   "author": {
     "name": "Frederick Katsura",
@@ -20,11 +23,20 @@
     "express": "^4.17.1",
     "express-async-router": "^0.1.15"
   },
+  "lint-staged": {
+		"*.{js,json,jsx,ts,tsx}": [
+			"prettier --write",
+			"eslint --fix --quiet"
+		]
+	},
   "devDependencies": {
     "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "eslint": "^8.2.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.0.2",
+    "prettier": "^2.4.1",
     "typescript": "^4.4.4"
   }
 }

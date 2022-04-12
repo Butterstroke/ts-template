@@ -18,20 +18,20 @@
   },
   "license": "ISC",
   "lint-staged": {
-		"*.{js,json,jsx,ts,tsx}": [
-			"prettier --write",
-			"eslint --fix --quiet"
-		]
-	},
+    "*.{js,json,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix --quiet"
+    ]
+  },
   "devDependencies": {
-    "@types/node": "^16.11.6",
-    "@typescript-eslint/eslint-plugin": "^5.2.0",
-    "@typescript-eslint/parser": "^5.2.0",
-    "eslint": "^8.1.0",
+    "@types/node": "^17.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.19.0",
+    "@typescript-eslint/parser": "^5.19.0",
+    "eslint": "^8.13.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
-    "lint-staged": "^11.2.6",
-    "prettier": "^2.4.1",
-    "typescript": "^4.4.4"
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
   }
 }

@@ -2,17 +2,17 @@
 	"name": "aoc-{year}",
 	"version": "1.0.0",
 	"description": "Collection of AOC {year} Solutions",
-	"main": "./build/runPuzzle.js",
+	"main": "./build/src/runPuzzle.js",
 	"scripts": {
 		"build": "tsc",
 		"watch": "tsc -w",
-		"launch": "tsc && node build/runPuzzle.js",
+		"launch": "tsc && node build/src/runPuzzle.js",
 		"eslint": "eslint .",
 		"eslint:fix": "eslint . --fix",
 		"prettier": "prettier --write .",
 		"prepare": "husky install",
-		"start": "./build/index.js",
-		"createday": "tsc && node build/createDay.js"
+		"start": "./build/src/index.js",
+		"createday": "tsc && node build/src/createDay.js"
 	},
 	"author": {
 		"name": "Frederick Katsura",

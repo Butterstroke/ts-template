@@ -1,32 +1,86 @@
 /**
- * @author Frederick Katsura <Katsurinstudios@protonmail.ch>
- * @version 1.0.0
+ * @author Frederick Katsura <fkatsura@katsurin.com>
+ * @version 2.0.0
  * @description Script to setup the code space for an AOC day.
  */
 
-import { createWriteStream, mkdirSync } from "fs";
+import { createWriteStream, existsSync, mkdirSync } from "fs";
+import axios from "axios";
+import config from "../config.json";
 
 const TSHeader = "import { readFileSync } from \"fs\"; \nconst values = readFileSync(\"./inputs/Day--DAYINPUT.txt\", \"utf8\").split(\"\\n\");";
 
-const READMETemplate = 
-`# Day --DAYINPUT: <Title>
-Link: [Day --DAYINPUT](https://adventofcode.com/--YEARINPUT/day/--DAYINPUT)
+function writeToFile(path: string, data: unknown) {
+    const writeStream = createWriteStream(path);
+    writeStream.write(data);
+    writeStream.end();
+}
 
-## Part 1
+async function retrieveDayInfo(day: number): Promise<boolean> {
+    const { data: problemData, status: problemStatus } = await axios.get(
+        `https://adventofcode.com/${config.year}/day/${day}`,
+        {
+            headers: {
+                "Cookie": `session=${config.api_key}`
+            }
+        }
+    );
 
-## Part 2
-`;
+    if (problemStatus !== 200) {
+        console.error("FAILED TO RETREIVE PROBLEM FOR DAY!");
+        return false;
+    }
+
+    const firstIndex = problemData.indexOf("<article");
+    const secondIndex = problemData.indexOf("<article", firstIndex + 1);
+
+    const parsedData = problemData
+        .substring(firstIndex, problemData.indexOf("/article>") + 9)
+        .replace("<h2>---", `<h2><a href="https://adventofcode.com/${config.year}/day/${day}">`)
+        .replace("---</h2>", "</a></h2>")
+        .replace("<article", "<div")
+        .replace("article>", "div>");
+
+    let secondHalf = "";
+
+    if (secondIndex > 0) {
+        secondHalf = problemData.substring(secondIndex);
+        secondHalf = secondHalf
+            .substring(0, secondHalf.indexOf("/article>") + 9)
+            .replace("<article", "<div")
+            .replace("article>", "div>");
+    }
+
+    writeToFile(`./src/Day${day}/README.md`, parsedData + secondHalf)
+
+    if (existsSync(`./inputs/Day${day}.txt`)) {
+        return true;
+    }
+
+    const { data, status } = await axios.get(
+        `https://adventofcode.com/${config.year}/day/${day}/input`,
+        {
+            headers: {
+                "Cookie": `session=${config.api_key}`
+            }
+        }
+    );
+
+    if (status !== 200) {
+        console.error("FAILED TO RETREIVE INPUT FOR DAY!");
+        return false;
+    }
+
+    if (!existsSync("./inputs")) {
+        mkdirSync("./inputs");
+    }
+
+    writeToFile(`./inputs/Day${day}.txt`, data);
+    return true;
+}
 
 async function createDay() {
-    const args = process.argv;
-
-    let day: number;
-
-    if (args[2] === undefined) {
-        day = new Date().getDate();
-    } else {
-        day = Number(args[2]); 
-    }
+    const day = process.argv[2] === undefined ? new Date().getDate() : Number(process.argv[2]);
 
     if (isNaN(day)) {
         throw new Error("Day input is not a number.");
@@ -39,24 +93,26 @@ async function createDay() {
     }
 
     const dirPath = `./src/day${day}`;
+    let firstDownload = false;
 
-    mkdirSync(dirPath);
+    if (!existsSync(dirPath)) {
+        mkdirSync(dirPath);
+        firstDownload = true;
+    }
 
-    let writeStream = createWriteStream(`${dirPath}/part1.ts`);
-    writeStream.write(TSHeader.replace("--DAYINPUT", day.toString()));
-    writeStream.end();
+    const check = await retrieveDayInfo(day);
+    if (!check) {
+        console.log("Failure detected. Halted day creation...");
+        return;
+    }
 
-    writeStream = createWriteStream(`${dirPath}/part2.ts`);
-    writeStream.write(TSHeader.replace("--DAYINPUT", day.toString()));
-    writeStream.end();
+    if (!firstDownload) {
+        console.log("Updated README With Second Part!");
+        return;
+    }
 
-    writeStream = createWriteStream(`${dirPath}/README.md`);
-    writeStream.write(
-        READMETemplate
-            .replace(/--DAYINPUT/g, day.toString())
-            .replace("--YEARINPUT", new Date().getFullYear().toString())
-    );
-    writeStream.end();
+    writeToFile(`${dirPath}/part1.ts`, TSHeader.replace("--DAYINPUT", day.toString()));
+    writeToFile(`${dirPath}/part2.ts`, TSHeader.replace("--DAYINPUT", day.toString()));
 
     console.log("Day created.");
 }

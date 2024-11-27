@@ -1,6 +1,6 @@
 @echo off
 
-set baseURL=https://github.com/Butterstroke/project-templates/trunk/
+set baseURL=https://github.com/AurelicButter/project-templates/trunk/
 set baseDIR=%~dp0
 
 REM Can't have a project without a name.
